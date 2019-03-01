@@ -146,7 +146,7 @@ Defer is one of the most obvious features in go
 : на просторах интернета есть вот такое решение, применяется затенение переменной
 : этот подход исправит проблему вызванную замыканием, однако выглядит это по крайней
 
-# Slide 17
+# Slide 18
 * Avoid shadowing
 - use all initialized variables only in the scope where they where created
 - avoid using named return parameters 
@@ -158,17 +158,23 @@ Defer is one of the most obvious features in go
 : в общем стоит избегать затенения
 : и используйте defer очень осторожно
 
+# Slide 17
+* Linters
+- go tool vet --shadow
+- errcheck
+- nakedret
+
 
 ### anonimous functions ###
 
 
-# Slide 18
+# Slide 19
 * Parallelism shadowing
 .play examples/example6.go /^func main/,/^}/
 : более цивилизованным подходом является передача значения через параметры функции
 : так мы избегаем и замыкания и затенения
 
-# Slide 19
+# Slide 20
 * Anonymous functions
 .play examples/example7.go /begin show/,/end show/
 : однако на много правильнее будет вынести логику в отдельную именованную функцию
@@ -177,7 +183,7 @@ Defer is one of the most obvious features in go
 #: и разгрузите логику, позволяя линейно читать ваш код.
 #: а так же можно написать документацию и переиспользовать в будующем
 
-# Slide 20
+# Slide 21
 * Anonymous functions
 - the anonymous function gives a possibility to use closures
 - anonymous functions are making code over complexed
@@ -187,7 +193,7 @@ Defer is one of the most obvious features in go
 : и разгрузите логику, позволяя линейно читать ваш код.
 : а так же можно написать документацию и переиспользовать в будующем
 
-# Slide 21
+# Slide 22
 * Anonymous functions
 .play examples/example15.go /begin show/,/end show/
 : вот пример приблежонный к реальности что бы вы понимали, к чему приводит их применение
@@ -197,12 +203,12 @@ Defer is one of the most obvious features in go
 : функция выполняет более одной обязанности
 : и очени большая вероятность что при изменении этот код начнет сбоить
 
-# Slide 22
+# Slide 23
 * Anonymous functions
 .play examples/example18.go /begin show/,/end show/
 : вот на столько проще выглядит код который просто не использует все выше упомянутые "фичи"
 
-# Slide 23
+# Slide 24
 * Best practices
 - don't use anonymous functions
 - don't use closures
@@ -211,11 +217,17 @@ Defer is one of the most obvious features in go
 : замыкания всегдя делают ваш код более сложным, усложняет рефакторинг
 : следует использовать куда болеее гибкие механизмы такие как функции и методы
 
+# Slide 25
+* The main() idea
+- We should minimize possible consequences
+- Make our programs more reliable
+- Make functions linear, eassy to read and understand
+
 
 ### panics ###
 
 
-# Slide 24
+# Slide 26
 * Panic
 - Panic is NOT an error
 - panic in one handler can terminate execution of all program
@@ -231,7 +243,7 @@ Defer is one of the most obvious features in go
 : их сложно дебажить так как recover зачастую происходит не в том же месте где паника
 : панику проблематично тестировать
 
-# Slide 25
+# Slide 27
 * Panic (what to expect)
 - recover in the highest level of the goroutine (handler) just in case
 - recover on the lowest level near the dangerous code
@@ -249,7 +261,7 @@ Defer is one of the most obvious features in go
 ### errors ###
 
 
-# Slide 26
+# Slide 28
 * Custom errors
 - custom codes
 - stack trace
@@ -261,36 +273,36 @@ Defer is one of the most obvious features in go
 : вы можете захотеть разделить сообщения ошибки на те которые логируются 
 : и те, которые возвращаются клиенту
 
-# Slide 27
+# Slide 29
 * Custom errors
 .code examples/example9.go /begin custom error/,/end custom error/
 : вот пример кастомной ошибки которая умеет дополнять сообщение в зависимости от кода
 
-# Slide 28
+# Slide 30
 * Custom errors
 .play examples/example11.go /begin show/,/end show/
 : однако, как видим при попытке обернуть нашу кастомную ошибку с помощью пакета fmt
 : наше сообщение выглядит не так, как мы хотели бы
 
-# Slide 29
+# Slide 31
 * fmt.Errorf
 fmt/print.go handleMethods()
 .code examples/example19.go /begin show/,/end show/
 : это происходит потому что fmt.Errorf() вызывает под копотом метод Error()
 
-# Slide 30
+# Slide 32
 * Custom errors
 .code examples/example10.go /begin interface/,/end interface/
 .code examples/example10.go /begin custom error/,/end custom error/
 : поэтому мы будем работать через наш враппер
 
-# Slide 31
+# Slide 33
 * Custom errors
 .play examples/example12.go /begin show/,/end show/
 : и при таком подходе мы решили проблему с врапанием ошибок, 
 : теперь мы можем без препятствий добавлять контекст как нам удобно
 
-# Slide 32
+# Slide 34
 * Stacktrace
 .code examples/example21.go /begin err/,/end err/
 : иногда вам может понадобиться вывести стек трейс для ошибки
@@ -299,14 +311,14 @@ fmt/print.go handleMethods()
 : это важно, так как позволит вам легче в дальнейшем писать тесты, вы сможете проверять
 : ошибки сравнивая их текст, что не возможно сделать если выводится стектрейс
 
-# Slide 33
+# Slide 35
 * Stacktrace
 .play examples/example21.go /begin main/,/end main/
 : а вот так будет выглядеть применение ошибки умеющей выводить стек
 : за счет того что мы имплементировали интерфейс StackError мы можем к нему скаститься
 : при этом избежать приведения к конкретному типу
 
-# Slide 34
+# Slide 36
 * Custom errors
 .play examples/example20.go /begin show/,/end show/
 : как видим, значение по умолчанию для указателя на нашу кастомную ошибку nil
@@ -314,11 +326,11 @@ fmt/print.go handleMethods()
 : это связанно с тем, что интерфейсный тим равен nil только когда у него нет ни динамического значения
 : ни динамического типа, который мы, в нашем примере ошибочно установили
 
-# Slide 35
+# Slide 37
 * Custom errors
 .play examples/example22.go /begin show/,/end show/
 
-# Slide 36
+# Slide 38
 * Custom errors
 - don't add stack trace to Error() implementation
 - wrap custom errors with special function
